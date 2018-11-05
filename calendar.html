@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calendar</title>
+</head>
+<style>
+    body {
+        background: turquoise;
+    }
+
+    h1 {
+        font-family: sans-serif;
+        text-align: center;
+        font-size: 100px;
+        user-select: none;
+    }
+
+    td,
+    tr {
+        border: 1px solid black;
+        text-align: center;
+        background: #17D4FE;
+        user-select: none;
+        width: 14%;
+        height: 15vh;
+    }
+
+    #calendar {
+        border-collapse: collapse;
+        display: table;
+        margin: auto;
+        width: 100%;
+        height: 700px;
+        font-size: 50px;
+        font-family: sans-serif;
+    }
+
+    .clock {
+        top: 0;
+        right: 5px;
+        position: absolute;
+        color: blue;
+        font-size: 20px;
+        font-family: monospace;
+        user-select: none;
+    }
+
+    #filler {
+        display: none;
+    }
+
+    .christmas-day::first-line {
+        font-size: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .new-years-day::first-line {
+        font-size: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .canada-day-style::first-line {
+        font-size: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .boxing-day-style::first-line {
+        font-size: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .remembrance-day-style::first-line {
+        font-size: 50px;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<body>
+    <h1 id="monthName"></h1>
+    <canvas id="canvas" width="200" height="200" style="position: absolute; margin-left: 0; top: 0;">
+    </canvas>
+    <div class="clock" id="MyClockDisplay"></div>
+
+
+    <table id="calendar">
+        <tr class="calRow">
+            <td id="new-year" class="canada-day">1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td>7</td>
+        </tr>
+        <tr class="calRow">
+            <td>8</td>
+            <td>9</td>
+            <td>10</td>
+            <td id="remembrance-day">11</td>
+            <td>12</td>
+            <td>13</td>
+            <td>14</td>
+        </tr>
+        <tr class="calRow">
+            <td>15</td>
+            <td>16</td>
+            <td>17</td>
+            <td>18</td>
+            <td>19</td>
+            <td>20</td>
+            <td>21</td>
+        </tr>
+        <tr class="calRow">
+            <td>22</td>
+            <td>23</td>
+            <td>24</td>
+            <td id="christmas">25</td>
+            <td id="boxing-day">26</td>
+            <td>27</td>
+            <td>28</td>
+        </tr>
+        <tr id="lastTr" class="calRow">
+            <td class="optional" id="febOptional">29</td>
+            <td class="optional">30</td>
+            <td class="optional" id="monthOptional">31</td>
+            <td class="optional"></td>
+            <td class="optional"></td>
+            <td class="optional"></td>
+            <td class="optional"></td>
+        </tr>
+    </table>
+</body>
+<script>
+    var currentMonth = n;
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    var calendar = document.getElementById("calendar");
+    var rowLength = calendar.rows.length;
+    const d = new Date();
+    var monthOptional = document.getElementById("monthOptional");
+    var febOptional = document.getElementById("febOptional")
+    var optional = document.getElementsByClassName("optional");
+    var numDaysInMonth = daysInMonth(d.getMonth(), d.getFullYear());
+    var n = monthNames[d.getMonth()];
+    window.onload = function () {
+        if (numDaysInMonth === 28) {
+            for (var i = 0; i < optional.length; i++) {
+                optional[i].style.display = "none";
+            }
+        }
+
+        else if (numDaysInMonth === 29) {
+            febOptional.style.display = "none";
+        }
+        else if (numDaysInMonth === 30) {
+            monthOptional.style.display = "none";
+            var lastTr = document.getElementById("lastTr")
+            var filler = document.createElement("td");
+            lastTr.appendChild(filler);
+        }
+
+
+
+        for (var o = 0; o < rowLength; o++) {
+
+            var cells = calendar.rows.item(o).cells;
+
+            var cellLength = cells.length;
+
+            for (var j = 0; j < cellLength; j++) {
+                var cellVal = cells.item(j).innerHTML;
+                if (cellVal == d.getDate()) {
+                    cells[j].style.outlineStyle = "solid";
+                    cells[j].style.outlineColor = "blue";
+                }
+                var tds = document.querySelectorAll('tr.calRow td');
+
+                for (var l = 0; l < tds.length; l++) {
+                    if (tds[l].textContent === "25" && d.getMonth() === 11) {
+                        var christmas = document.getElementById("christmas");
+                        christmas.style.backgroundColor = "red";
+                        var txt = "\r\nChristmas Day";
+                        tds[l].textContent += txt;
+                        tds[l].classList.add("christmas-day");
+                        tds[l].setAttribute("style", "white-space: pre; background: red; font-size: 20px; padding: 0; margin: 0; width: 15%; height: 15vh;");
+                    }
+
+                    else if (tds[l].textContent === "1" && d.getMonth() === 0) {
+                        var new_year = document.getElementById("new-year");
+                        new_year.style.backgroundColor = "red";
+                        var txt1 = "\r\nNew Years Day";
+                        tds[l].textContent += txt1;
+                        tds[l].classList.add("new-years-day");
+                        tds[l].setAttribute("style", "white-space: pre; background: red; font-size: 20px; padding: 0; margin: 0; width: 15%; height: 15vh;");
+                    }
+                    else if (tds[l].textContent === "1" && d.getMonth() === 6) {
+                        var canada_day = document.getElementsByClassName("canada-day")[0];
+                        canada_day.style.outlineStyle = "solid";
+                        canada_day.style.outlineColor = "red";
+                        var txt2 = "\r\nCanada Day";
+                        tds[l].textContent += txt2;
+                        tds[l].classList.add("canada-day-style");
+                        tds[l].setAttribute("style", "white-space: pre; background: red; font-size: 20px; padding: 0; margin: 0; width: 15%; height: 15vh;");
+                    }
+                    else if (tds[l].textContent === "26" && d.getMonth() === 11) {
+                        var boxing_day = document.getElementById("boxing-day");
+                        boxing_day.style.backgroundColor = "red";
+                        var txt3 = "\r\nBoxing Day";
+                        tds[l].textContent += txt3;
+                        tds[l].classList.add("boxing-day-style");
+                        tds[l].setAttribute("style", "white-space: pre; background: red; font-size: 20px; padding: 0; margin: 0; width: 15%; height: 15vh;");
+                    }
+                    if (tds[l].textContent === "11" && d.getMonth() === 10) {
+                        var remembrance_day = document.getElementById("remembrance-day");
+                        remembrance_day.style.backgroundColor = "red";
+                        var txt4 = "\r\nRemembrance Day";
+                        tds[l].textContent += txt4;
+                        tds[l].classList.add("remembrance-day-style");
+                        tds[l].setAttribute("style", "white-space: pre; background: red; font-size: 20px; padding: 0; margin: 0; width: 15%; height: 15vh;");
+                    }
+                }
+
+            }
+        }
+
+
+        document.getElementById("monthName").innerHTML = n + "\n" + d.getFullYear();
+    }
+    function daysInMonth(month, year) {
+        return 32 - new Date(year, month, 32).getDate();
+    }
+    function showTime() {
+        var date = new Date();
+        var h = date.getHours(); // 0 - 23
+        var m = date.getMinutes(); // 0 - 59
+        var s = date.getSeconds(); // 0 - 59
+        var session = "AM";
+
+        if (h == 0) {
+            h = 12;
+        }
+
+        if (h > 12) {
+            h = h - 12;
+            session = "PM";
+        }
+
+        h = (h < 10) ? "0" + h : h;
+        m = (m < 10) ? "0" + m : m;
+        s = (s < 10) ? "0" + s : s;
+
+        var time = h + ":" + m + ":" + s + " " + session;
+        document.getElementById("MyClockDisplay").innerText = time;
+        document.getElementById("MyClockDisplay").textContent = time;
+
+        setTimeout(showTime, 1000);
+
+    }
+
+    showTime();
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var radius = canvas.height / 2;
+    ctx.translate(radius, radius);
+    radius = radius * 0.90
+    setInterval(drawClock, 0);
+
+    function drawClock() {
+        drawFace(ctx, radius);
+        drawNumbers(ctx, radius);
+        drawTime(ctx, radius);
+    }
+
+    function drawFace(ctx, radius) {
+        var grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        grad = ctx.createRadialGradient(0, 0, radius * 0.95, 0, 0, radius * 1.05);
+        grad.addColorStop(0, '#333');
+        grad.addColorStop(0.5, 'white');
+        grad.addColorStop(1, '#333');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = radius * 0.1;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 0.1, 0, 2 * Math.PI);
+        ctx.fillStyle = '#333';
+        ctx.fill();
+    }
+
+    function drawNumbers(ctx, radius) {
+        var ang;
+        var num;
+        ctx.font = radius * 0.15 + "px arial";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        for (num = 1; num < 13; num++) {
+            ang = num * Math.PI / 6;
+            ctx.rotate(ang);
+            ctx.translate(0, -radius * 0.85);
+            ctx.rotate(-ang);
+            ctx.fillText(num.toString(), 0, 0);
+            ctx.rotate(ang);
+            ctx.translate(0, radius * 0.85);
+            ctx.rotate(-ang);
+        }
+    }
+
+    function drawTime(ctx, radius) {
+        var now = new Date();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        //hour
+        hour = hour % 12;
+        hour = (hour * Math.PI / 6) +
+            (minute * Math.PI / (6 * 60)) +
+            (second * Math.PI / (360 * 60));
+        drawHand(ctx, hour, radius * 0.5, radius * 0.07);
+        //minute
+        minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+        drawHand(ctx, minute, radius * 0.8, radius * 0.07);
+        // second
+        second = (second * Math.PI / 30);
+        drawHand(ctx, second, radius * 0.9, radius * 0.02);
+    }
+
+    function drawHand(ctx, pos, length, width) {
+        ctx.beginPath();
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.moveTo(0, 0);
+        ctx.rotate(pos);
+        ctx.lineTo(0, -length);
+        ctx.stroke();
+        ctx.rotate(-pos);
+    }
+</script>
+
+</html>
